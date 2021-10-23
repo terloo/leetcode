@@ -1,4 +1,6 @@
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import javax.swing.tree.TreeNode;
 
@@ -90,31 +92,21 @@ import javax.swing.tree.TreeNode;
 class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
 
-        List<TreeNode> nodes = new ArrayList<>();
-        nodes.add(root);
+        LinkedList<TreeNode> stack = new LinkedList<>();
 
-        TreeNode tmp;
-        while (nodes.size() != 0) {
-            tmp = nodes.get(nodes.size() - 1);
-            if (tmp.left != null) {
-                nodes.add(tmp.left);
-                tmp.left = null;
-                continue;
-            }
-            nodes.remove(nodes.size() - 1);
-            result.add(tmp.val);
-            if (tmp.right != null) {
-                nodes.add(tmp.right);
-                tmp.right = null;
-                continue;
+        while (stack.size() > 0 || root != null) {
+            if (root != null) {
+                stack.push(root);
+                root = root.left;
+            } else {
+                TreeNode tmp = stack.pop();
+                result.add(tmp.val);
+                root = tmp.right;
             }
         }
+
         return result;
     }
 }
 // @lc code=end
-
