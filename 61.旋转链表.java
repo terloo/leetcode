@@ -1,4 +1,5 @@
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * @lc app=leetcode.cn id=61 lang=java
@@ -58,31 +59,28 @@ import java.util.Stack;
  */
 class Solution {
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null) {
-            return null;
+        if (head == null || k == 0) {
+            return head;
         }
-        int len = 0;
-        Stack<ListNode> s = new Stack<>();
-        ListNode tmp = head;
 
-        while (head.next != null) {
-            len++;
-            s.push(head);
+        List<ListNode> nodelist = new ArrayList<>();
+        while (head != null) {
+            nodelist.add(head);
             head = head.next;
         }
-        len++;
-        s.push(head);
-        head.next = tmp;
 
+        int len = nodelist.size();
+        if (len == 1) {
+            return nodelist.get(0);
+        }
+        nodelist.get(len - 1).next = nodelist.get(0);
 
         k %= len;
-        for (int i = 0; i < k; i++) {
-            tmp = s.pop();
+        nodelist.get(len - k - 1).next = null;
+        if (k == 0) {
+            return nodelist.get(0);
         }
-        s.pop().next = null;
-
-        return tmp;
+        return nodelist.get(len - k);
     }
 }
 // @lc code=end
-
