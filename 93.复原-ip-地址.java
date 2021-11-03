@@ -89,7 +89,7 @@ class Solution {
             return 0;
         }
         if (Integer.parseInt(s) > 255) {
-            return -1;
+            return 0;
         }
         return 1;
     }
@@ -103,10 +103,7 @@ class Solution {
         }
         for (int i = splitIndex; i < s.length(); i++) {
             String ip = s.substring(splitIndex, i + 1);
-            int valiRes = isValidIp(ip);
-            if (valiRes == 0) {
-                continue;
-            } else if (valiRes < 0) {
+            if (isValidIp(ip) == 0) {
                 return;
             }
             path.add(ip);
