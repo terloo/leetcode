@@ -81,44 +81,36 @@ class Solution {
         return res;
     }
 
-    // 判断分割出来的每一段字符串是否是合法的IP地址
-    boolean isValidIp(String s) {
-        //判断其是否含有前导0
+    int isValidIp(String s) {
         if (s.charAt(0) == '0' && s.length() > 1) {
-            return false;
+            return 0;
         }
-        //长度为4就直接舍弃，加上这一步是为了后面parseInt做准备,防止超过了Integer可以表示的整数范围
         if (s.length() > 3) {
-            return false;
+            return 0;
         }
-        //将字符转为int判断是否大于255，因为题目明确说了只由数字组成，所以这里没有对非数字的字符进行判断
         if (Integer.parseInt(s) > 255) {
-            return false;
+            return -1;
         }
-        return true;
+        return 1;
     }
 
     void backtracking(String s, int splitIndex, int level) {
-        //递归终止条件，分割的四个字符串都是合法的IP地址
-        if (level == 4) {
-            //在代码的最后再利用join函数加上“.”,构造IP地址的表示形式
+        if (level == 4 && splitIndex == s.length()) {
             res.add(String.join(".", path));
+        }
+        if ((4 - level) * 3 < (s.length() - splitIndex)) {
             return;
         }
         for (int i = splitIndex; i < s.length(); i++) {
-            //每一次分割之后，对剩余字符长度是否合理进行判断，剪枝操作，优化运行速度
-            if ((s.length() - i - 1) > 3 * (3 - level)) {
+            String ip = s.substring(splitIndex, i + 1);
+            int valiRes = isValidIp(ip);
+            if (valiRes == 0) {
                 continue;
+            } else if (valiRes < 0) {
+                return;
             }
-            //如果分割的字符串不是合理的IP地址，跳过
-            if (!isValidIp(s.substring(splitIndex, i + 1))) {
-                continue;
-            }
-            //把合法的IP地址段加入path存储
-            path.add(s.substring(splitIndex, i + 1));
-            //每次把分割线往后移一位，且段数level+1
+            path.add(ip);
             backtracking(s, i + 1, level + 1);
-            //进行回溯操作
             path.remove(path.size() - 1);
         }
     }
