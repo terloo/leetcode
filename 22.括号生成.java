@@ -52,7 +52,7 @@ import java.util.List;
 class Solution {
     public List<String> generateParenthesis(int n) {
         num = n;
-        back(n * 2);
+        back(n * 2, 0, 0);
 
         return results;
     }
@@ -65,41 +65,31 @@ class Solution {
     private List<String> results = new ArrayList<>();
     private List<String> result = new ArrayList<>();
 
-    private void back(int n) {
-        if (!valid()) {
+    private void back(int n, int lNum, int rNum) {
+        if (!valid(lNum, rNum)) {
             return;
         }
         if (n == 0) {
-            if (Collections.frequency(result, "(") == num && Collections.frequency(result, ")") == num) {
+            if (lNum == num && rNum == num) {
                 results.add(String.join("", result));
             }
             return;
         }
 
         result.add(lBrackets);
-        back(n - 1);
+        back(n - 1, lNum + 1, rNum);
         result.remove(result.size() - 1);
         result.add(rBrackets);
-        back(n - 1);
+        back(n - 1, lNum, rNum + 1);
         result.remove(result.size() - 1);
     }
 
-    private boolean valid() {
+    private boolean valid(int lNum, int rNum) {
+        if (rNum > lNum || lNum > num) {
+            return false;
+        }
         if (result.size() == 0) {
             return true;
-        }
-        LinkedList<String> stack = new LinkedList<>();
-        for (int i = 0; i < result.size(); i++) {
-            if (lBrackets.equals(result.get(i))) {
-                stack.push(lBrackets);
-                if (stack.size() > num) {
-                    return false;
-                }
-            } else {
-                if (stack.poll() == null) {
-                    return false;
-                }
-            }
         }
         return true;
     }
