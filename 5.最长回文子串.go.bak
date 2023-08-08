@@ -1,0 +1,98 @@
+/*
+ * @lc app=leetcode.cn id=5 lang=golang
+ *
+ * [5] 最长回文子串
+ *
+ * https://leetcode.cn/problems/longest-palindromic-substring/description/
+ *
+ * algorithms
+ * Medium (36.93%)
+ * Likes:    5510
+ * Dislikes: 0
+ * Total Accepted:    1.1M
+ * Total Submissions: 3.1M
+ * Testcase Example:  '"babad"'
+ *
+ * 给你一个字符串 s，找到 s 中最长的回文子串。
+ *
+ *
+ *
+ * 示例 1：
+ *
+ *
+ * 输入：s = "babad"
+ * 输出："bab"
+ * 解释："aba" 同样是符合题意的答案。
+ *
+ *
+ * 示例 2：
+ *
+ *
+ * 输入：s = "cbbd"
+ * 输出："bb"
+ *
+ *
+ *
+ *
+ * 提示：
+ *
+ *
+ * 1 <= s.length <= 1000
+ * s 仅由数字和英文字母组成
+ *
+ *
+ */
+
+package leetcode
+
+// @lc code=start
+func longestPalindrome(s string) string {
+	// 1.确定状态：索引i到j的子字符串是否为回文
+	// 2.转移方程：f(i, j) = f(i+1, j-1) && s[i] == s[j]
+	// 3.初始条件：i==j时为true j-i==1时为s[i]==s[j] 边界条件0<=i<s.length 0<=j<s.length
+	// 4.计算顺序：2<=子串长度<=length
+	length := len(s)
+	if length <= 1 {
+		return s
+	}
+	grid := make([][]bool, length)
+	for i := range grid {
+		grid[i] = make([]bool, length)
+	}
+
+	// 初始条件
+	for i := 0; i < length; i++ {
+		grid[i][i] = true
+	}
+
+	maxLen := 0
+	maxI := 0
+	maxJ := 0
+
+	// 子串长度从2开始length
+	for subStrLen := 2; subStrLen <= length; subStrLen++ {
+		for startIdx := 0; startIdx < length; startIdx++ {
+			endIdx := startIdx + subStrLen - 1
+			if endIdx > length-1 {
+				break
+			}
+			if subStrLen == 2 {
+				grid[startIdx][endIdx] = s[startIdx] == s[endIdx]
+			} else {
+				grid[startIdx][endIdx] = grid[startIdx+1][endIdx-1] && s[startIdx] == s[endIdx]
+			}
+			if grid[startIdx][endIdx] && maxLen < endIdx-startIdx+1 {
+				maxLen = endIdx - startIdx + 1
+				maxI = startIdx
+				maxJ = endIdx
+			}
+		}
+	}
+
+	if maxJ+1 == length {
+		return s[maxI:]
+	}
+	return s[maxI : maxJ+1]
+}
+
+// @lc code=end
